@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rate Our Experience | Bizi Değerlendirin</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: #f8f9fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .card {
+            background: #ffffff;
+            max-width: 400px;
+            width: 100%;
+            padding: 40px 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            text-align: center;
+        }
+
+        .logo {
+            max-width: 120px;
+            margin-bottom: 25px;
+            height: auto;
+        }
+
+        /* Çok dilli başlıkların alt alta çok kaba durmaması için hiyerarşi düzenlendi */
+        h2 {
+            font-size: 22px;
+            color: #2d3748;
+            margin-bottom: 6px;
+        }
+
+        h3 {
+            font-size: 18px;
+            color: #4a5568;
+            font-weight: 500;
+            margin-bottom: 6px;
+        }
+
+        p {
+            font-size: 15px;
+            color: #718096;
+            margin-bottom: 30px;
+            line-height: 1.4;
+        }
+
+        .stars {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .star-btn {
+            background: none;
+            border: none;
+            font-size: 40px;
+            cursor: pointer;
+            color: #e2e8f0;
+            transition: transform 0.2s, color 0.2s;
+        }
+
+        .star-btn:hover, .star-btn.active {
+            color: #ffb703;
+            transform: scale(1.15);
+        }
+
+        .footer-text {
+            font-size: 11px;
+            color: #a0aec0;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <!-- DÜZELTİLDİ: Akıllı tırnak işareti (”) normal tırnak (") ile değiştirildi -->
+        <img src="https://static.wixstatic.com/media/bbaa92_06d089f322c1430e901941f3fbf400d6~mv2.png" alt="ORIGINS" class="logo">
+        
+        <!-- Alanya İçin Çok Dilli Başlıklar -->
+        <h2>How was your experience?</h2>
+        <h3>Deneyiminizi nasıl buldunuz?</h3>
+        <p>Wie war Ihre Erfahrung?</p>
+
+        <!-- Yıldız Butonları -->
+        <div class="stars">
+            <button class="star-btn" data-rating="1">★</button>
+            <button class="star-btn" data-rating="2">★</button>
+            <button class="star-btn" data-rating="3">★</button>
+            <button class="star-btn" data-rating="4">★</button>
+            <button class="star-btn" data-rating="5">★</button>
+        </div>
+
+        <div class="footer-text">
+            Powered by Alanya Review System
+        </div>
+    </div>
+
+    <script>
+        // Hedef Link Alanları
+        const GOOGLE_MAPS_LINK = "https://search.google.com/local/writereview?placeid=ChIJg6giq2KZ3BQRQElWE4GjfaM";
+        const COMPLAINT_PAGE_LINK = "https://alicanstreak.wixsite.com/revius/blank-2";
+
+        const stars = document.querySelectorAll('.star-btn');
+
+        stars.forEach(star => {
+            // Görsel Hover Efekti Kontrolü
+            star.addEventListener('mouseover', () => {
+                const rating = star.getAttribute('data-rating');
+                highlightStars(rating);
+            });
+
+            star.addEventListener('mouseleave', () => {
+                highlightStars(0);
+            });
+
+            // Tıklama Anında Yönlendirme Algoritması
+            star.addEventListener('click', () => {
+                const rating = parseInt(star.getAttribute('data-rating'));
+
+                if (rating >= 4) {
+                    window.location.href = GOOGLE_MAPS_LINK;
+                } else {
+                    window.location.href = COMPLAINT_PAGE_LINK;
+                }
+            });
+        });
+
+        function highlightStars(rating) {
+            stars.forEach(star => {
+                if (star.getAttribute('data-rating') <= rating) {
+                    star.classList.add('active');
+                } else {
+                    star.classList.remove('active');
+                }
+            });
+        }
+    </script>
+</body>
+</html>
