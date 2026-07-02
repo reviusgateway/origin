@@ -45,19 +45,21 @@
         <h2 id="form-title">Görüşleriniz Bizim İçin Değerli</h2>
         <p id="form-subtitle">Lütfen yaşadığınız olumsuz deneyimi bizimle paylaşın, durumu hemen düzeltelim.</p>
         
-        <!-- 📄 STANDART HTML FORMU OLARAK GÖNDERİLİYOR (YUKARIYA BAĞLI TARGET İLE) -->
+        <!-- 📄 GERÇEK STRÜKTÜRÜNE KAVUŞMUŞ FORMUZ -->
         <form action="https://docs.google.com/forms/d/e/1FAIpQLScAX5wCCohN3JWCt5oyUKKOULSeWnxM1al1W8e2Ip9bDvp3aQ/formResponse" method="POST" target="secret_frame" onsubmit="submitted=true; showSuccess();">
             
-            <textarea name="entry.206411797" id="placeholder-msg" placeholder="Mesajınız..." required></textarea>
+            <!-- Mesaj (Gerçek ID: 1437549205) -->
+            <textarea name="entry.1437549205" id="placeholder-msg" placeholder="Mesajınız..." required></textarea>
             
             <div class="contact-question" onclick="toggleContact()">
                 <input type="checkbox" id="want-contact">
                 <label for="want-contact" id="label-question">Benimle iletişime geçilmesini istiyorum</label>
             </div>
             
+            <!-- İsim ve Telefon (Gerçek ID'ler) -->
             <div class="contact-fields" id="contact-fields-div">
-                <input type="text" name="entry.1226065416" id="placeholder-name" placeholder="Adınız Soyadınız">
-                <input type="tel" name="entry.174241772" id="placeholder-phone" placeholder="Telefon Numaranız">
+                <input type="text" name="entry.1063892896" id="placeholder-name" placeholder="Adınız Soyadınız">
+                <input type="tel" name="entry.1070079186" id="placeholder-phone" placeholder="Telefon Numaranız">
             </div>
             
             <button type="submit" id="btn-text">Gönder</button>
@@ -74,9 +76,9 @@
     <div class="footer-text">POWERED BY REVIEWSGATEWAY</div>
 </div>
 
-<!-- 🔮 BÜYÜYÜ KORUYAN VE GOOGLE SAYFASINI ESİR ALAN IFRAME -->
+<!-- 🔮 BÜYÜYÜ KORUYAN IFRAME -->
 <script type="text/javascript">let submitted=false;</script>
-<iframe name="secret_frame" id="secret_frame" style="display:none;" onload="if(submitted){/* Google sayfasının üst sekmeye fırlamasını engeller */}"></iframe>
+<iframe name="secret_frame" id="secret_frame" style="display:none;"></iframe>
 
 <script>
     const translations = {
