@@ -7,8 +7,8 @@
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Helvetica Neue', Arial, sans-serif; }
         body { background-color: #f4f4f7; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
-        .card { background: #ffffff; width: 100%; max-width: 400px; padding: 30px 24px; border-radius: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); text-align: center; }
-        .logo { width: auto;      max-width: 180px;      height: 70px;      object-fit: contain;      margin-bottom: 20px; }
+        .card { background: #ffffff; width: 100%; max-width: 400px; padding: 30px 24px; border-radius: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); text-align: center; position: relative; }
+        .logo { width: auto; max-width: 180px; height: 70px; object-fit: contain; margin-bottom: 20px; }
         h2 { color: #1d1d1f; font-size: 20px; font-weight: 600; margin-bottom: 10px; }
         p { color: #86868b; font-size: 14px; margin-bottom: 20px; line-height: 1.4; }
         textarea { width: 100%; height: 120px; padding: 14px; border: 1px solid #d2d2d7; border-radius: 12px; font-size: 15px; resize: none; margin-bottom: 15px; outline: none; transition: border 0.2s; }
@@ -29,71 +29,91 @@
         button { background: #0071e3; color: white; border: none; width: 100%; padding: 14px; border-radius: 12px; font-size: 16px; font-weight: 500; cursor: pointer; transition: background 0.2s; margin-top: 5px; }
         button:hover { background: #0077ed; }
         .footer-text { font-size: 10px; color: #c5c5c7; margin-top: 20px; }
+
+        /* 🎉 Başarı Ekranı Tasarımı */
+        .success-screen { display: none; padding: 20px 0; }
+        .success-icon { font-size: 50px; color: #34c759; margin-bottom: 15px; }
     </style>
 </head>
 <body>
 
 <div class="card">
-    <img src="logo.png" alt="Logo" class="logo" onerror="this.src='https://via.placeholder.com/150?text=Welcome'">
-    
-    <h2 id="form-title">Görüşleriniz Bizim İçin Değerli</h2>
-    <p id="form-subtitle">Lütfen yaşadığınız olumsuz deneyimi bizimle paylaşın, durumu hemen düzeltelim.</p>
-    
-    <!-- 📄 ENTEGRE EDİLMİŞ GOOGLE FORM ALTYAPISI -->
-    <form action="https://docs.google.com/forms/d/e/1FAIpQLScAX5wCCohN3JWCt5oyUKKOULSeWnxM1al1W8e2Ip9bDvp3aQ/formResponse" method="POST">
+    <!-- Form İçeriği Kısmı -->
+    <div id="form-content">
+        <img src="logo.png" alt="Logo" class="logo" onerror="this.src='https://via.placeholder.com/150?text=Welcome'">
         
-        <!-- Mesaj Kutusu -->
-        <textarea name="entry.206411797" id="placeholder-msg" placeholder="Mesajınız..." required></textarea>
+        <h2 id="form-title">Görüşleriniz Bizim İçin Değerli</h2>
+        <p id="form-subtitle">Lütfen yaşadığınız olumsuz deneyimi bizimle paylaşın, durumu hemen düzeltelim.</p>
         
-        <!-- İletişim isteği sorusu -->
-        <div class="contact-question" onclick="toggleContact()">
-            <input type="checkbox" id="want-contact">
-            <label for="want-contact" id="label-question">Benimle iletişime geçilmesini istiyorum</label>
-        </div>
-        
-        <!-- Gizli Alanlar -->
-        <div class="contact-fields" id="contact-fields-div">
-            <input type="text" name="entry.1226065416" id="placeholder-name" placeholder="Adınız Soyadınız">
-            <input type="tel" name="entry.174241772" id="placeholder-phone" placeholder="Telefon Numaranız">
-        </div>
-        
-        <button type="submit" id="btn-text">Gönder</button>
-    </form>
+        <!-- 🎯 GOOGLE FORM TARGET AYARI İLE GİZLENDİ -->
+        <form action="https://docs.google.com/forms/d/e/1FAIpQLScAX5wCCohN3JWCt5oyUKKOULSeWnxM1al1W8e2Ip9bDvp3aQ/formResponse" method="POST" target="hidden_iframe" onsubmit="showSuccess()">
+            
+            <textarea name="entry.206411797" id="placeholder-msg" placeholder="Mesajınız..." required></textarea>
+            
+            <div class="contact-question" onclick="toggleContact()">
+                <input type="checkbox" id="want-contact">
+                <label for="want-contact" id="label-question">Benimle iletişime geçilmesini istiyorum</label>
+            </div>
+            
+            <div class="contact-fields" id="contact-fields-div">
+                <input type="text" name="entry.1226065416" id="placeholder-name" placeholder="Adınız Soyadınız">
+                <input type="tel" name="entry.174241772" id="placeholder-phone" placeholder="Telefon Numaranız">
+            </div>
+            
+            <button type="submit" id="btn-text">Gönder</button>
+        </form>
+    </div>
 
-    <div class="footer-text">POWERED BY REVIUSGATEWAY</div>
+    <!-- 🎉 Sonradan Açılacak Başarı Ekranı -->
+    <div id="success-screen" class="success-screen">
+        <div class="success-icon">✓</div>
+        <h2 id="success-title">Teşekkür Ederiz!</h2>
+        <p id="success-subtitle">Geri bildiriminiz başarıyla yöneticilere iletilmiştir.</p>
+    </div>
+
+    <div class="footer-text">POWERED BY REVIEWSGATEWAY</div>
 </div>
 
+<!-- 🔮 SİHİRLİ ARKA PLAN PENCERESİ (Görünmez İframe) -->
+<iframe name="hidden_iframe" id="hidden_iframe" style="display:none;"></iframe>
+
 <script>
-    // 🌍 Dil Paketleri (TR, EN, RU, DE)
+    // 🌍 Dil Paketleri (Başarı Ekranı Dahil)
     const translations = {
         tr: {
             title: "Görüşleriniz Bizim İçin Değerli",
             subtitle: "Lütfen yaşadığınız olumsuz deneyimi bizimle paylaşın, durumu hemen düzeltelim.",
             msg: "Mesajınız...", question: "Şikayetimle ilgili geri iletişime geçilmesini istiyorum", 
-            name: "Adınız Soyadınız", phone: "Telefon Numaranız", btn: "Gönder"
+            name: "Adınız Soyadınız", phone: "Telefon Numaranız", btn: "Gönder",
+            s_title: "Teşekkür Ederiz!", s_subtitle: "Geri bildiriminiz başarıyla işletme yönetimine iletilmiştir."
         },
         en: {
             title: "Your Feedback is Valuable",
             subtitle: "Please share your negative experience with us so we can improve our service.",
             msg: "Your message...", question: "I want to be contacted regarding this matter", 
-            name: "Your Name", phone: "Your Phone Number", btn: "Submit"
+            name: "Your Name", phone: "Your Phone Number", btn: "Submit",
+            s_title: "Thank You!", s_subtitle: "Your feedback has been successfully sent to the management."
         },
         ru: {
             title: "Ваш отзыв важен для нас",
             subtitle: "Пожалуйста, поделитесь своим негативным опытом, чтобы мы могли все исправить.",
             msg: "Ваше сообщение...", question: "Я хочу, чтобы со мной связались по этому вопросу", 
-            name: "Ваше имя", phone: "Номер телефона", btn: "Отправить"
+            name: "Ваше имя", phone: "Номер телефона", btn: "Отправить",
+            s_title: "Спасибо!", s_subtitle: "Ваш отзыв был успешно отправлен руководству."
         },
         de: {
             title: "Ihr Feedback ist uns wichtig",
             subtitle: "Bitte teilen Sie uns Ihre negative Erfahrung mit, damit wir uns verbessern können.",
             msg: "Ihre Nachricht...", question: "Ich möchte in dieser Angelegenheit kontaktiert werden", 
-            name: "Ihr Name", phone: "Ihre Telefonnummer", btn: "Absenden"
+            name: "Ihr Name", phone: "Ihre Telefonnummer", btn: "Absenden",
+            s_title: "Vielen Dank!", s_subtitle: "Ihr Feedback wurde erfolgreich an das Management gesendet."
         }
     };
 
+    let userLang = 'en';
+
     function setLanguage() {
-        let userLang = (navigator.language || navigator.userLanguage).toLowerCase().slice(0, 2);
+        userLang = (navigator.language || navigator.userLanguage).toLowerCase().slice(0, 2);
         if (!translations[userLang]) userLang = 'en';
 
         document.getElementById('form-title').innerText = translations[userLang].title;
@@ -124,6 +144,19 @@
             nameInput.required = false;
             phoneInput.required = false;
         }
+    }
+
+    // ✨ Form Gönderildiğinde Büyüyü Koruyan Fonksiyon
+    function showSuccess() {
+        // Formu gizle
+        document.getElementById('form-content').style.display = 'none';
+        
+        // Başarı metinlerini dile göre ayarla
+        document.getElementById('success-title').innerText = translations[userLang].s_title;
+        document.getElementById('success-subtitle').innerText = translations[userLang].s_subtitle;
+        
+        // Başarı ekranını göster
+        document.getElementById('success-screen').style.display = 'block';
     }
 
     window.onload = setLanguage;
