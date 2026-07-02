@@ -47,7 +47,7 @@
         
         <!-- 📄 GERÇEK STRÜKTÜRÜNE KAVUŞMUŞ FORMUZ -->
         <form action="https://docs.google.com/forms/d/e/1FAIpQLScAX5wCCohN3JWCt5oyUKKOULSeWnxM1al1W8e2Ip9bDvp3aQ/formResponse" method="POST" target="secret_frame" onsubmit="submitted=true; showSuccess();">
-            
+            <input type="hidden" name="entry.261637907" id="hidden-rating-field" value="">
             <!-- Mesaj (Gerçek ID: 1437549205) -->
             <textarea name="entry.1437549205" id="placeholder-msg" placeholder="Mesajınız..." required></textarea>
             
@@ -73,7 +73,7 @@
         <p id="success-subtitle">Geri bildiriminiz başarıyla yöneticilere iletilmiştir.</p>
     </div>
 
-    <div class="footer-text">POWERED BY REVIEWSGATEWAY</div>
+    <div class="footer-text">POWERED BY REVIUSGATEWAY</div>
 </div>
 
 <!-- 🔮 BÜYÜYÜ KORUYAN IFRAME -->
@@ -115,9 +115,25 @@
     let userLang = 'en';
 
     function setLanguage() {
-        userLang = (navigator.language || navigator.userLanguage).toLowerCase().slice(0, 2);
-        if (!translations[userLang]) userLang = 'en';
+        // 1. URL'den parametreleri oku
+        const urlParams = new URLSearchParams(window.location.search);
+        const langParam = urlParams.get('lang');
+        const ratingParam = urlParams.get('rating');
+        
+        // 2. Dil Ayarla
+        if (langParam && translations[langParam]) {
+            userLang = langParam;
+        } else {
+            userLang = (navigator.language || navigator.userLanguage).toLowerCase().slice(0, 2);
+            if (!translations[userLang]) userLang = 'en';
+        }
 
+        // 3. Yıldız Değerini Gizli Input'a Göm
+        if (ratingParam) {
+            document.getElementById('hidden-rating-field').value = ratingParam;
+        }
+
+        // 4. Ekrandaki Metinleri Değiştir
         document.getElementById('form-title').innerText = translations[userLang].title;
         document.getElementById('form-subtitle').innerText = translations[userLang].subtitle;
         document.getElementById('placeholder-msg').placeholder = translations[userLang].msg;
