@@ -115,6 +115,15 @@
     let userLang = 'en';
 
     function setLanguage() {
+        // 🔥 KİLİTLEME KALKANI: Kullanıcı daha önce formu gönderdiyse, ne kadar geri gelirse gelsin direkt Thank You ekranını göster
+        if (localStorage.getItem('feedback_submitted') === 'true') {
+            document.getElementById('form-content').style.display = 'none';
+            document.getElementById('success-title').innerText = translations[userLang].s_title;
+            document.getElementById('success-subtitle').innerText = translations[userLang].s_subtitle;
+            document.getElementById('success-screen').style.display = 'block';
+            return; // Fonksiyonun geri kalanını çalıştırma, burada kilitle
+        }
+
         // 1. URL'den parametreleri oku
         const urlParams = new URLSearchParams(window.location.search);
         const langParam = urlParams.get('lang');
@@ -143,13 +152,15 @@
         document.getElementById('btn-text').innerText = translations[userLang].btn;
     }
 
-    function toggleContact() {
+    function toggleContact(event) {
         const checkbox = document.getElementById('want-contact');
         const fieldsDiv = document.getElementById('contact-fields-div');
         const nameInput = document.getElementById('placeholder-name');
         const phoneInput = document.getElementById('placeholder-phone');
         
-        if (event.target.id !== 'want-contact' && event.target.id !== 'label-question') {
+        // Mobil tarayıcı uyumluluğu için event nesnesini güvenli kontrol etme
+        const targetId = event && event.target ? event.target.id : '';
+        if (targetId !== 'want-contact' && targetId !== 'label-question') {
             checkbox.checked = !checkbox.checked;
         }
 
@@ -164,7 +175,16 @@
         }
     }
 
+    // 🚀 Form gönderildiğinde çalışan fonksiyonun güncellenmiş hali
     function showSuccess() {
+        // Çift gönderimi engellemek için butonu hemen kilitle
+        const submitBtn = document.getElementById('btn-text');
+        if (submitBtn) submitBtn.disabled = true;
+
+        // 🔥 Tarayıcı hafızasına mühür basıyoruz (Cihazı işaretle)
+        localStorage.setItem('feedback_submitted', 'true');
+
+        // Ekrana başarı şablonunu getir
         document.getElementById('form-content').style.display = 'none';
         document.getElementById('success-title').innerText = translations[userLang].s_title;
         document.getElementById('success-subtitle').innerText = translations[userLang].s_subtitle;
