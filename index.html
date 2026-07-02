@@ -5,18 +5,77 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Feedback</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Helvetica Neue', Arial, sans-serif; }
-        body { background-color: #f4f4f7; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; -webkit-tap-highlight-color: transparent; }
-        .card { background: #ffffff; width: 100%; max-width: 400px; padding: 30px 24px; border-radius: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); text-align: center; }
-        .logo { width: auto;      max-width: 180px;      height: 70px;      object-fit: contain;      margin-bottom: 20px; }
-        h2 { color: #1d1d1f; font-size: 22px; font-weight: 600; margin-bottom: 10px; line-height: 1.3; }
-        p { color: #86868b; font-size: 15px; margin-bottom: 25px; line-height: 1.4; padding: 0 10px; }
-        .stars { display: flex; justify-content: center; gap: 8px; margin-bottom: 15px; direction: rtl; }
+        * { 
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0; 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+        }
+        body { 
+            background-color: #f4f4f7; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh; 
+            padding: 20px; 
+            -webkit-tap-highlight-color: transparent;
+            overflow: hidden; /* Gereksiz mobil kaydırmaları engeller */
+        }
+        .card { 
+            background: #ffffff; 
+            width: 100%; 
+            max-width: 400px; 
+            padding: 40px 24px; 
+            border-radius: 24px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.03); 
+            text-align: center; 
+        }
+        .logo { 
+            width: auto;      
+            max-width: 180px;      
+            height: 70px;      
+            object-fit: contain;      
+            margin-bottom: 25px; 
+        }
+        h2 { 
+            color: #1d1d1f; 
+            font-size: 22px; 
+            font-weight: 600; 
+            margin-bottom: 12px; 
+            line-height: 1.3; 
+        }
+        p { 
+            color: #86868b; 
+            font-size: 15px; 
+            margin-bottom: 30px; 
+            line-height: 1.4; 
+            padding: 0 10px; 
+        }
+        .stars { 
+            display: flex; 
+            justify-content: center; 
+            gap: 12px; 
+            margin-bottom: 15px; 
+            direction: rtl; 
+        }
         .stars input { display: none; }
-        .stars label { font-size: 45px; color: #e5e5ea; cursor: pointer; transition: color 0.2s ease, transform 0.1s ease; }
-        .stars label:active { transform: scale(0.9); }
+        .stars label { 
+            font-size: 48px; 
+            color: #e5e5ea; 
+            cursor: pointer; 
+            transition: color 0.2s ease, transform 0.1s ease; 
+            -webkit-user-select: none; /* Mobil tarayıcıda basılı tutunca seçilmeyi engeller */
+            user-select: none;
+        }
+        .stars label:active { transform: scale(0.85); }
         .stars input:checked ~ label, .stars label:hover, .stars label:hover ~ label { color: #ffcc00; }
-        .footer-text { font-size: 11px; color: #c5c5c7; margin-top: 25px; letter-spacing: 0.5px; }
+        .footer-text { 
+            font-size: 10px; 
+            color: #c5c5c7; 
+            margin-top: 35px; 
+            letter-spacing: 0.8px; 
+            font-weight: 500;
+        }
     </style>
 </head>
 <body>
@@ -26,8 +85,8 @@
     <img src="logo.png" alt="Logo" class="logo" onerror="this.src='https://via.placeholder.com/150?text=Welcome'">
     
     <!-- Dinamik Metin Alanları -->
-    <h2 id="title">Bizi Değerlendirin</h2>
-    <p id="subtitle">Deneyiminizi geliştirmemize yardımcı olmak için lütfen birkaç saniyenizi ayırın.</p>
+    <h2 id="title">...</h2>
+    <p id="subtitle">...</p>
     
     <!-- Yıldızlar -->
     <div class="stars">
@@ -42,11 +101,13 @@
 </div>
 
 <script>
-    // 🔗 BURAYI RESTORANA GÖRE DEĞİŞTİRECEKSİNİZ
+    // =========================================================
+    // 🔗 RESTORAN ÖZEL AYARLARI (Her yeni müşteride sadece burayı değiştir)
+    // =========================================================
     const GOOGLE_MAPS_URL = "https://search.google.com/local/writereview?placeid=ChIJg6giq2KZ3BQRQElWE4GjfaM"; 
-    const COMPLAINT_PAGE_URL = "complaint.html"; // Şikayet formuna gidecek sayfa
+    const COMPLAINT_PAGE_URL = "complaint.html"; 
 
-    // 🌍 Dil Paketleri (TR, EN, RU, DE)
+    // 🌍 Dil Sözlüğü
     const translations = {
         tr: {
             title: "Deneyiminizi Değerlendirin",
@@ -66,32 +127,33 @@
         }
     };
 
-    // 📱 Cihaz Dilini Algılama Fonksiyonu
-    function setLanguage() {
-        // Cihaz dilinin ilk iki harfini alır (Örn: "en-US" -> "en", "tr-TR" -> "tr")
+    // Global dil değişkeni (Şikayet sayfasına paslamak için)
+    let activeLang = 'en';
+
+    // 📱 Cihaz Dilini Algılama ve Uygulama
+    function initializeLanguage() {
         let userLang = (navigator.language || navigator.userLanguage).toLowerCase().slice(0, 2);
         
-        // Eğer algılanan dil desteklediklerimiz arasında yoksa varsayılan olarak İngilizce (en) yap
-        if (!translations[userLang]) {
-            userLang = 'en';
+        if (translations[userLang]) {
+            activeLang = userLang;
         }
 
-        // Ekrandaki yazıları değiştir
-        document.getElementById('title').innerText = translations[userLang].title;
-        document.getElementById('subtitle').innerText = translations[userLang].subtitle;
+        document.getElementById('title').innerText = translations[activeLang].title;
+        document.getElementById('subtitle').innerText = translations[activeLang].subtitle;
     }
 
-    // Yıldızlara tıklandığında çalışacak yönlendirme mantığı
+    // ⭐ Yönlendirme Algoritması
     function handleRating(stars) {
         if (stars >= 4) {
             window.location.href = GOOGLE_MAPS_URL;
         } else {
-            window.location.href = COMPLAINT_PAGE_URL;
+            // Dil bilgisini URL parametresi olarak şikayet sayfasına gönderiyoruz
+           window.location.href = `${COMPLAINT_PAGE_URL}?lang=${activeLang}&rating=${stars}`;
         }
     }
 
-    // Sayfa açıldığında dil ayarını çalıştır
-    window.onload = setLanguage;
+    // Sayfa yüklendiğinde tetikle
+    window.onload = initializeLanguage;
 </script>
 
 </body>
