@@ -132,6 +132,9 @@
 
     // 📱 Cihaz Dilini Algılama ve Uygulama
     function initializeLanguage() {
+        if (localStorage.getItem('feedback_submitted') === 'true') {
+            window.location.href = COMPLAINT_PAGE_URL;
+            return; // Fonksiyonu durdu
         let userLang = (navigator.language || navigator.userLanguage).toLowerCase().slice(0, 2);
         
         if (translations[userLang]) {
